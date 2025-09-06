@@ -55,24 +55,27 @@ const weeklyQuantities = [
 const activityData = [
   { activity: "KKST Release", planned: 85, actual: 78, weight: 15 },
   { activity: "CAF Release", planned: 92, actual: 88, weight: 10 },
-  { activity: "Site Survey", planned: 95, actual: 92, weight: 8 },
-  { activity: "Equipment Removal", planned: 68, actual: 65, weight: 25 },
-  { activity: "Tower Dismantling", planned: 45, actual: 42, weight: 20 },
-  { activity: "Site Restoration", planned: 30, actual: 28, weight: 12 },
-  { activity: "Inbound Material", planned: 88, actual: 85, weight: 10 },
+  { activity: "Permit Release", planned: 75, actual: 32, weight: 2 },
+  { activity: "Site Visit", planned: 95, actual: 92, weight: 8 },
+  { activity: "Asset Tagging", planned: 68, actual: 65, weight: 25 },
+  { activity: "Dismantling NE", planned: 45, actual: 42, weight: 20 },
+  { activity: "Dismantling FE", planned: 95, actual: 92, weight: 8 },
+  { activity: "Material Packaging & Inbound Scheduling", planned: 95, actual: 92, weight: 8 },
+  { activity: "Inbound Material", planned: 30, actual: 28, weight: 12 },
+  { activity: "Rekon & BAST", planned: 88, actual: 85, weight: 10 },
 ]
 
 const regions = [
   "All Regions",
-  "Region 1 - North",
-  "Region 2 - South",
-  "Region 3 - East",
-  "Region 4 - West",
-  "Region 5 - Central",
-  "Region 6 - Northeast",
-  "Region 7 - Southeast",
-  "Region 8 - Northwest",
-  "Region 9 - Southwest",
+  "Sumbagut",
+  "Sumbagteng",
+  "Sumbangsel",
+  "Jabodetabek Inner",
+  "Jabodetabe Outer",
+  "Jawa Barat",
+  "Jawa Tengah",
+  "Jawa Timur",
+  "Bali Nusa",
 ]
 
 export default function AnalyticsPage() {

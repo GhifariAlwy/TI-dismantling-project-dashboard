@@ -17,27 +17,32 @@ import { Building2, Calendar, Clock, Save, ArrowLeft, CheckCircle, AlertCircle, 
 
 // Mock data for demonstration
 const regions = [
-  "Region 1 - North",
-  "Region 2 - South",
-  "Region 3 - East",
-  "Region 4 - West",
-  "Region 5 - Central",
-  "Region 6 - Northeast",
-  "Region 7 - Southeast",
-  "Region 8 - Northwest",
-  "Region 9 - Southwest",
+  "All Regions",
+  "Sumbagut",
+  "Sumbagteng",
+  "Sumbangsel",
+  "Jabodetabek Inner",
+  "Jabodetabe Outer",
+  "Jawa Barat",
+  "Jawa Tengah",
+  "Jawa Timur",
+  "Bali Nusa",
 ]
 
 const activities = [
   { id: "kkst_release", name: "KKST Release", weight: 15 },
   { id: "caf_release", name: "CAF Release", weight: 10 },
-  { id: "site_survey", name: "Site Survey", weight: 8 },
-  { id: "equipment_removal", name: "Equipment Removal", weight: 25 },
-  { id: "tower_dismantling", name: "Tower Dismantling", weight: 20 },
-  { id: "site_restoration", name: "Site Restoration", weight: 12 },
+  { id: "permit_release", name: "Permit Release", weight: 8 },
+  { id: "site_vsit", name: "Site Visit", weight: 25 },
+  { id: "asset_tagging", name: "Asset Tagging", weight: 20 },
+  { id: "dismantle_ne", name: "Dismantle NE", weight: 12 },
+  { id: "dismantle_fe", name: "Dismantle FE", weight: 10 },
+  { id: "material_pack", name: "Material Packaging & Inbound Scheduling", weight: 10 },
   { id: "inbound_material", name: "Inbound Material", weight: 10 },
+  { id: "rekon_bast", name: "Rekon & BAST", weight: 10 },
 ]
 
+// Tidak Digunakan dalam rekap daily
 const sites = Array.from({ length: 50 }, (_, i) => ({
   id: `SITE-${String(i + 1).padStart(3, "0")}`,
   name: `Site ${i + 1}`,

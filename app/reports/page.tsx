@@ -23,8 +23,63 @@ import {
   TrendingUp,
 } from "lucide-react"
 
+// Define types for our data structures
+interface DailyPlanSummary {
+  totalSites: number;
+  activeSites: number;
+  plannedActivities: number;
+  regions: number;
+}
+
+interface DailyActualSummary {
+  totalSites: number;
+  completedSites: number;
+  completedActivities: number;
+  regions: number;
+  efficiency: number;
+}
+
+interface Activity {
+  activity: string;
+  planned: number;
+  sites: number;
+  region?: string;
+  actual?: number;
+  variance?: number;
+}
+
+interface Issue {
+  site: string;
+  issue: string;
+  impact: string;
+  status: string;
+}
+
+interface RegionalSummary {
+  region: string;
+  sites: number;
+  activities: number;
+  progress: number;
+}
+
+interface ReportHistory {
+  date: string;
+  type: string;
+  status: string;
+  time: string;
+}
+
+interface ReportData {
+  date: string;
+  type: string;
+  summary: DailyPlanSummary | DailyActualSummary;
+  activities: Activity[];
+  issues?: Issue[];
+  regionalSummary?: RegionalSummary[];
+}
+
 // Mock data for reports
-const dailyPlanData = {
+const dailyPlanData: ReportData = {
   date: "2024-01-15",
   type: "Daily Plan Report",
   summary: {
@@ -34,22 +89,22 @@ const dailyPlanData = {
     regions: 6,
   },
   activities: [
-    { activity: "KKST Release", planned: 8, sites: 3, region: "Region 1 - North" },
-    { activity: "CAF Release", planned: 5, sites: 2, region: "Region 2 - South" },
-    { activity: "Site Survey", planned: 12, sites: 4, region: "Region 3 - East" },
-    { activity: "Equipment Removal", planned: 15, sites: 5, region: "Region 1 - North" },
-    { activity: "Tower Dismantling", planned: 3, sites: 2, region: "Region 4 - West" },
-    { activity: "Site Restoration", planned: 2, sites: 1, region: "Region 2 - South" },
+    { activity: "KKST Release", planned: 8, sites: 3, region: "Sumbagut" },
+    { activity: "CAF Release", planned: 5, sites: 2, region: "Jabo Inner" },
+    { activity: "Permit Release", planned: 12, sites: 4, region: "Bali Nusa" },
+    { activity: "Site Visit", planned: 15, sites: 5, region: "Sumbagsel" },
+    { activity: "Dismantling NE & FE", planned: 3, sites: 2, region: "Jabar" },
+    { activity: "Asset Tagging", planned: 2, sites: 1, region: "Jatim" },
   ],
   regionalSummary: [
-    { region: "Region 1 - North", sites: 4, activities: 23, progress: 85 },
-    { region: "Region 2 - South", sites: 3, activities: 7, progress: 92 },
-    { region: "Region 3 - East", sites: 2, activities: 12, progress: 78 },
-    { region: "Region 4 - West", sites: 3, activities: 3, progress: 65 },
+    { region: "Jatim", sites: 4, activities: 23, progress: 85 },
+    { region: "Jateng", sites: 3, activities: 7, progress: 92 },
+    { region: "Jabar", sites: 2, activities: 12, progress: 78 },
+    { region: "Bali Nusa", sites: 3, activities: 3, progress: 65 },
   ],
 }
 
-const dailyActualData = {
+const dailyActualData: ReportData = {
   date: "2024-01-15",
   type: "Daily Actual Report",
   summary: {
@@ -68,13 +123,13 @@ const dailyActualData = {
     { activity: "Site Restoration", planned: 2, actual: 1, variance: -1, sites: 1 },
   ],
   issues: [
-    { site: "SITE-003", issue: "Weather delay - high winds", impact: "Medium", status: "Monitoring" },
-    { site: "SITE-007", issue: "Equipment malfunction", impact: "High", status: "Resolved" },
-    { site: "SITE-012", issue: "Permit clarification needed", impact: "Low", status: "In Progress" },
+    { site: "Jabar - BDG009", issue: "Weather delay - high winds", impact: "Medium", status: "Monitoring" },
+    { site: "Jatim - CDK971", issue: "Equipment malfunction", impact: "High", status: "Resolved" },
+    { site: "Sumbagut - PMR667", issue: "Permit clarification needed", impact: "Low", status: "In Progress" },
   ],
 }
 
-const reportHistory = [
+const reportHistory: ReportHistory[] = [
   { date: "2024-01-15", type: "Daily Actual", status: "Generated", time: "18:30" },
   { date: "2024-01-15", type: "Daily Plan", status: "Generated", time: "08:00" },
   { date: "2024-01-14", type: "Daily Actual", status: "Generated", time: "18:45" },
@@ -84,13 +139,18 @@ const reportHistory = [
 ]
 
 export default function ReportsPage() {
-  const [selectedReportType, setSelectedReportType] = useState("plan")
+  const [selectedReportType, setSelectedReportType] = useState<"plan" | "actual">("plan")
   const [selectedDate, setSelectedDate] = useState("2024-01-15")
   const [isGenerating, setIsGenerating] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [reportGenerated, setReportGenerated] = useState(false)
 
   const currentData = selectedReportType === "plan" ? dailyPlanData : dailyActualData
+
+  // Type guard to check if summary is DailyPlanSummary
+  const isPlanSummary = (summary: DailyPlanSummary | DailyActualSummary): summary is DailyPlanSummary => {
+    return (summary as DailyPlanSummary).activeSites !== undefined;
+  }
 
   const handleBack = () => {
     window.location.href = "/dashboard"
@@ -178,7 +238,7 @@ export default function ReportsPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Report Type</label>
-                  <Select value={selectedReportType} onValueChange={setSelectedReportType}>
+                  <Select value={selectedReportType} onValueChange={(value: "plan" | "actual") => setSelectedReportType(value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -251,34 +311,34 @@ export default function ReportsPage() {
                     <div className="text-center p-4 bg-muted/50 rounded-lg">
                       <TrendingUp className="h-6 w-6 mx-auto mb-2 text-accent" />
                       <p className="text-2xl font-bold">
-                        {selectedReportType === "plan"
+                        {isPlanSummary(currentData.summary)
                           ? currentData.summary.activeSites
                           : currentData.summary.completedSites}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {selectedReportType === "plan" ? "Active Sites" : "Completed Sites"}
+                        {isPlanSummary(currentData.summary) ? "Active Sites" : "Completed Sites"}
                       </p>
                     </div>
                     <div className="text-center p-4 bg-muted/50 rounded-lg">
                       <BarChart3 className="h-6 w-6 mx-auto mb-2 text-chart-2" />
                       <p className="text-2xl font-bold">
-                        {selectedReportType === "plan"
+                        {isPlanSummary(currentData.summary)
                           ? currentData.summary.plannedActivities
                           : currentData.summary.completedActivities}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {selectedReportType === "plan" ? "Planned Activities" : "Completed Activities"}
+                        {isPlanSummary(currentData.summary) ? "Planned Activities" : "Completed Activities"}
                       </p>
                     </div>
                     <div className="text-center p-4 bg-muted/50 rounded-lg">
                       <Users className="h-6 w-6 mx-auto mb-2 text-chart-4" />
                       <p className="text-2xl font-bold">
-                        {selectedReportType === "plan"
+                        {isPlanSummary(currentData.summary)
                           ? currentData.summary.regions
                           : `${currentData.summary.efficiency}%`}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {selectedReportType === "plan" ? "Active Regions" : "Efficiency"}
+                        {isPlanSummary(currentData.summary) ? "Active Regions" : "Efficiency"}
                       </p>
                     </div>
                   </div>
@@ -309,12 +369,12 @@ export default function ReportsPage() {
                               <TableCell>
                                 <span
                                   className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                                    activity.variance >= 0
+                                    activity.variance && activity.variance >= 0
                                       ? "bg-primary/10 text-primary"
                                       : "bg-destructive/10 text-destructive"
                                   }`}
                                 >
-                                  {activity.variance >= 0 ? "+" : ""}
+                                  {activity.variance && activity.variance >= 0 ? "+" : ""}
                                   {activity.variance}
                                 </span>
                               </TableCell>
